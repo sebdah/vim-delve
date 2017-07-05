@@ -38,15 +38,16 @@ autocmd VimLeave * call delve#removeInstructionsFile()<cr>
 " Configure the breakpoint sign in the gutter.
 exe "sign define delve_breakpoint text=◉ texthl=WarningMsg"
 
-" removeInstructionsFile is removing the defined instructions file. Typically
-" called when neovim is exited.
-function! delve#removeInstructionsFile(...)
-    call delete(g:delve_instructions_file)
+" dlvDebug is calling 'dlv debug' for the currently active main package.
+function! delve#dlvDebug(dir, ...)
+    call delve#writeInstructionsFile()
+    call termopen("cd " . a:dir . " ; dlv debug --backend=" . g:delve_backend . " --init=" . g:delve_instructions_file) | startinsert
 endfunction
 
-" writeInstructionsFile is persisting the instructions to the set file.
-function! delve#writeInstructionsFile(...) abort
-  call writefile(g:delve_instructions + ["continue"], g:delve_instructions_file)
+" dlvTest is calling 'dlv test' for the currently active package.
+function! delve#dlvTest(dir, ...)
+    call delve#writeInstructionsFile()
+    vnew | call termopen("cd " . a:dir . " ; dlv test --backend=" . g:delve_backend . " --init=" . g:delve_instructions_file) | startinsert
 endfunction
 
 " toggleBreakpoint is toggling breakpoints at the line under the cursor.
@@ -66,21 +67,21 @@ function! delve#toggleBreakpoint(file, line, ...)
     endif
 endfunction
 
-" dlvDebug is calling 'dlv debug' for the currently active main package.
-function! delve#dlvDebug(dir, ...)
-    call delve#writeInstructionsFile()
-    call termopen("cd " . a:dir . " ; dlv debug --backend=" . g:delve_backend . " --init=" . g:delve_instructions_file) | startinsert
+" removeInstructionsFile is removing the defined instructions file. Typically
+" called when neovim is exited.
+function! delve#removeInstructionsFile(...)
+    call delete(g:delve_instructions_file)
 endfunction
 
-" dlvTest is calling 'dlv test' for the currently active package.
-function! delve#dlvTest(dir, ...)
-    call delve#writeInstructionsFile()
-    vnew | call termopen("cd " . a:dir . " ; dlv test --backend=" . g:delve_backend . " --init=" . g:delve_instructions_file) | startinsert
+" writeInstructionsFile is persisting the instructions to the set file.
+function! delve#writeInstructionsFile(...) abort
+  call writefile(g:delve_instructions + ["continue"], g:delve_instructions_file)
 endfunction
 
 "-------------------------------------------------------------------------------
 "                                 Commands
 "-------------------------------------------------------------------------------
 command! -nargs=* -bang DelveToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'), <f-args>)
+command! -nargs=* -bang DelveClearBreakpoint call delve#clearBreakpoints(<f-args>)
 command! -nargs=* -bang DelveDebug call delve#dlvDebug(expand('%:p:h'), <f-args>)
 command! -nargs=* -bang DelveTest call delve#dlvTest(expand('%:p:h'), <f-args>)
