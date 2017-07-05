@@ -13,9 +13,10 @@ Requirements
 Commands
 --------
 
-- `DelveToggleBreakpoint` - Toggle a breakpoint at the current line
-- `DelveDebug` - Run `dlv debug` for the current session
-- `DelveTest` - Run `dlv test` for the current session
+- `DlvToggleBreakpoint` - Toggle a breakpoint at the current line
+- `DlvClearBreakpoints` - Clear all the breakpoints set
+- `DlvDebug` - Run `dlv debug` for the current session
+- `DlvTest` - Run `dlv test` for the current session
 
 Configuration
 -------------
