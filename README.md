@@ -4,12 +4,6 @@ vim-delve
 This is a `neovim` plugin for debugging [Go](https://golang.org) applications
 using [Delve](https://github.com/derekparker/delve).
 
-Requirements
-------------
-
-- [Delve](https://github.com/derekparker/delve)
-- [neovim](https://neovim.io)
-
 Feature highlights
 ------------------
 
@@ -19,6 +13,14 @@ Feature highlights
 - Launches a Delve CLI, so all commands are supported in there
 - Leverages the Neovim terminal
 - Supports `main` as well as and non-`main` packages
+
+![animated example](https://github.com/sebdah/vim-delve/raw/master/vim-delve-demo.gif "vim-delve demo")
+
+Requirements
+------------
+
+- [Delve](https://github.com/derekparker/delve)
+- [neovim](https://neovim.io)
 
 Installation
 ------------
