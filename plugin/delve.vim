@@ -8,17 +8,30 @@ endif
 "                           Configuration options
 "-------------------------------------------------------------------------------
 
-" delve_cache_path sets the default vim-delve cache path for breakpoint files.
+" g:delve_cache_path sets the default vim-delve cache path for breakpoint files.
 if !exists("g:delve_cache_path")
     let g:delve_cache_path = $HOME . "/.cache/" . v:progname . "/vim-delve"
 endif
 
-" delve_backend is setting the backend to use for the dlv commands.
+" g:delve_backend is setting the backend to use for the dlv commands.
 if !exists("g:delve_backend")
     let g:delve_backend = "default"
 endif
 
-" Build the breakpoints file with some degree of uniqueness.
+" g:delve_breakpoint_sign sets the sign to use in the gutter to indicate
+" breakpoints.
+if !exists("g:delve_breakpoint_sign")
+    let g:delve_breakpoint_sign = "◉"
+endif
+
+" g:delve_breakpoint_sign_highlight sets the highlight color for the breakpoint
+" sign.
+if !exists("g:delve_breakpoint_sign_highlight")
+    let g:delve_breakpoint_sign_highlight = "WarningMsg"
+endif
+
+" g:delve_instructions_file holdes the path to the instructions file. It should
+" be reasonably unique.
 let g:delve_instructions_file = g:delve_cache_path . "/". getpid() . "." . localtime()
 
 "-------------------------------------------------------------------------------
@@ -34,7 +47,7 @@ call mkdir(g:delve_cache_path, "p")
 autocmd VimLeave * call delve#removeInstructionsFile()<cr>
 
 " Configure the breakpoint sign in the gutter.
-exe "sign define delve_breakpoint text=◉ texthl=WarningMsg"
+exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight
 
 " clearBreakpoints is removing all active breakpoints.
 function! delve#clearBreakpoints(...)
