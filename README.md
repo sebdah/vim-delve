@@ -14,10 +14,11 @@ Feature highlights
 ------------------
 
 - Go syntax highlighting of debug output
+- Supports both breakpoints and tracepoints
 - Run the Delve debugger in a split view along side your code
 - Launches a Delve CLI, so all commands are supported in there
 - Leverages the Neovim terminal
-- Supports both `main` and non-`main` packages
+- Supports `main` as well as and non-`main` packages
 
 Installation
 ------------
@@ -31,12 +32,13 @@ Then reload neovim and run `PlugInstall`.
 Commands
 --------
 
-- `DlvToggleBreakpoint` - Toggle a breakpoint at the current line.
-- `DlvClearBreakpoints` - Clear all the breakpoints in the buffer.
+- `DlvClearAll` - Clear all the breakpoints and tracepoints in the buffer.
 - `DlvDebug` - Run `dlv debug` for the current session. Use this to test `main`
     packages.
 - `DlvTest` - Run `dlv test` for the current session. Use this to debug
     non-`main` packages.
+- `DlvToggleBreakpoint` - Toggle a breakpoint at the current line.
+- `DlvToggleTracepoint` - Toggle a tracepoint at the current line.
 
 Configuration
 -------------
@@ -78,6 +80,7 @@ could not launch process: exec: "lldb-server": executa ble file not found in $PA
 ```
 
 Example: `let g:delve_backend = "native"`
+
 
 License
 -------
