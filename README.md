@@ -8,15 +8,35 @@ Requirements
 ------------
 
 - [Delve](https://github.com/derekparker/delve)
-- [Neovim](https://neovim.io)
+- [neovim](https://neovim.io)
+
+Feature highlights
+------------------
+
+- Go syntax highlighting of debug output
+- Run the Delve debugger in a split view along side your code
+- Launches a Delve CLI, so all commands are supported in there
+- Leverages the Neovim terminal
+- Supports both `main` and non-`main` packages
+
+Installation
+------------
+
+Using `vim-plug`, add the following to your `init.vim`:
+
+`Plug 'sebdah/vim-delve'`
+
+Then reload neovim and run `PlugInstall`.
 
 Commands
 --------
 
-- `DlvToggleBreakpoint` - Toggle a breakpoint at the current line
-- `DlvClearBreakpoints` - Clear all the breakpoints set
-- `DlvDebug` - Run `dlv debug` for the current session
-- `DlvTest` - Run `dlv test` for the current session
+- `DlvToggleBreakpoint` - Toggle a breakpoint at the current line.
+- `DlvClearBreakpoints` - Clear all the breakpoints in the buffer.
+- `DlvDebug` - Run `dlv debug` for the current session. Use this to test `main`
+    packages.
+- `DlvTest` - Run `dlv test` for the current session. Use this to debug
+    non-`main` packages.
 
 Configuration
 -------------
@@ -31,10 +51,33 @@ Default: `let g:delve_backend = "default"`
 
 The path to where the instructions file for `dlv` is stored.
 
-Default:
+Default: `let g:delve_cache_path = $HOME . "/.cache/" . v:progname . "/vim-delve"`
 
-`let g:delve_cache_path = $HOME . "/.cache/" . v:progname . "/vim-delve"`
+**Breakpoint sign**
 
+Sets the sign to use to indicate breakpoints in the gutter.
+
+Default: `let g:delve_breakpoint_sign = "◉"`
+
+**Breakpoint sign highlight color**
+
+Set the color profile for the sign.
+
+Default: `let g:delve_breakpoint_sign_highlight = "WarningMsg"`
+
+Frequently Asked Questions
+--------------------------
+
+**Got an error about `lldb-server` on Mac OS X**
+
+If you get a message like the one below on Mac OS X, try setting
+`g:delve_backend` to `native`.
+
+```
+could not launch process: exec: "lldb-server": executa ble file not found in $PATH
+```
+
+Example: `let g:delve_backend = "native"`
 
 License
 -------
