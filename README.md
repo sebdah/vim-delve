@@ -45,37 +45,37 @@ Commands
 Configuration
 -------------
 
-**Delve backend** `g:delve_backend`
+### Delve backend (`g:delve_backend`)
 
 Defines the backend to use with Delve.
 
 Default: `let g:delve_backend = "default"`
 
-**Cache path** `g:delve_cache_path`
+### Cache path (`g:delve_cache_path`)
 
 The path to where the instructions file for `dlv` is stored.
 
 Default: `let g:delve_cache_path = $HOME . "/.cache/" . v:progname . "/vim-delve"`
 
-**Breakpoint sign**
+### Breakpoint sign (`g:delve_breakpoint_sign`)
 
 Sets the sign to use to indicate breakpoints in the gutter.
 
 Default: `let g:delve_breakpoint_sign = "●"`
 
-**Breakpoint sign highlight color**
+### Breakpoint sign highlight color (`g:delve_breakpoint_sign_highlight`)
 
 Set the color profile for the sign.
 
 Default: `let g:delve_breakpoint_sign_highlight = "WarningMsg"`
 
-**Tracepoint sign**
+### Tracepoint sign (`g:delve_tracepoint_sign`)
 
 Sets the sign to use to indicate tracepoints in the gutter.
 
 Default: `let g:delve_tracepoint_sign = "◆"`
 
-**Tracepoint sign highlight color**
+### Tracepoint sign highlight color (`g:delve_tracepoint_sign_highlight`)
 
 Set the color profile for the sign.
 
