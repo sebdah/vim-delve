@@ -61,13 +61,25 @@ Default: `let g:delve_cache_path = $HOME . "/.cache/" . v:progname . "/vim-delve
 
 Sets the sign to use to indicate breakpoints in the gutter.
 
-Default: `let g:delve_breakpoint_sign = "◉"`
+Default: `let g:delve_breakpoint_sign = "●"`
 
 **Breakpoint sign highlight color**
 
 Set the color profile for the sign.
 
 Default: `let g:delve_breakpoint_sign_highlight = "WarningMsg"`
+
+**Tracepoint sign**
+
+Sets the sign to use to indicate tracepoints in the gutter.
+
+Default: `let g:delve_tracepoint_sign = "◆"`
+
+**Tracepoint sign highlight color**
+
+Set the color profile for the sign.
+
+Default: `let g:delve_tracepoint_sign_highlight = "WarningMsg"`
 
 Frequently Asked Questions
 --------------------------
