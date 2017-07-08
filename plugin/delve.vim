@@ -194,13 +194,13 @@ endfunction
 "-------------------------------------------------------------------------------
 "                                 Commands
 "-------------------------------------------------------------------------------
-command! -nargs=* -bang DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'))
-command! -nargs=* -bang DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'))
-command! -nargs=* -bang DlvAttach call delve#attach(expand('%:p:h'))
-command! -nargs=* -bang DlvClearAll call delve#clearAll()
-command! -nargs=* -bang DlvDebug call delve#dlvDebug(expand('%:p:h'))
-command! -nargs=* -bang DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
-command! -nargs=* -bang DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'))
-command! -nargs=* -bang DlvTest call delve#dlvTest(expand('%:p:h'))
-command! -nargs=* -bang DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'))
-command! -nargs=* -bang DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'))
+command! -nargs=+ DlvAttach call delve#attach(expand('%:p:h'), <f-args>)
+command! -nargs=0 DlvClearAll call delve#clearAll()
+command! -nargs=0 DlvDebug call delve#dlvDebug(expand('%:p:h'))
+command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvTest call delve#dlvTest(expand('%:p:h'))
+command! -nargs=0 DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'))
