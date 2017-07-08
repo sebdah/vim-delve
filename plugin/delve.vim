@@ -92,51 +92,83 @@ function! delve#dlvCommandRunner(dir, command, flags, ...)
     startinsert
 endfunction
 
-" toggleBreakpoint is toggling breakpoints at the line under the cursor.
-function! delve#toggleBreakpoint(file, line, ...)
+" addBreakpoint adds a new breakpoint to the instructions and gutter. If a
+" tracepoint exists at the same location, it will be removed.
+function! delve#addBreakpoint(file, line, ...)
     let breakpoint = "break " . a:file . ':' . a:line
     let tracepoint = "trace " . a:file . ':' . a:line
 
     " Remove tracepoints if set on the same line.
-    let t = index(g:delve_instructions, tracepoint)
-    if t != -1
-        call delve#toggleTracepoint(a:file, a:line)
+    if index(g:delve_instructions, tracepoint) != -1
+        call delve#removeTracepoint(a:file, a:line)
     endif
 
-    " Find the breakpoint in the instructions, if available. If it's already
-    " there, remove it. If not, add it.
-    let i = index(g:delve_instructions, breakpoint)
+    call add(g:delve_instructions, breakpoint)
 
-    if i == -1
-        call add(g:delve_instructions, breakpoint)
-        exe "sign place ". len(g:delve_instructions) ." line=" . a:line . " name=delve_breakpoint file=" . a:file
-    else
+    exe "sign place ". len(g:delve_instructions) ." line=" . a:line . " name=delve_breakpoint file=" . a:file
+endfunction
+
+" addTracepoint adds a new tracepoint to the instructions and gutter. If a
+" breakpoint exists at the same location, it will be removed.
+function! delve#addTracepoint(file, line, ...)
+    let tracepoint = "trace " . a:file . ':' . a:line
+    let breakpoint = "break " . a:file . ':' . a:line
+
+    " Remove breakpoint if set on the same line.
+    if index(g:delve_instructions, breakpoint) != -1
+        call delve#removeBreakpoint(a:file, a:line)
+    endif
+
+    call add(g:delve_instructions, tracepoint)
+
+    exe "sign place ". len(g:delve_instructions) ." line=" . a:line . " name=delve_tracepoint file=" . a:file
+endfunction
+
+" removeTracepoint deletes a new tracepoint to the instructions and gutter.
+function! delve#removeTracepoint(file, line, ...)
+    let tracepoint = "trace " . a:file . ':' . a:line
+
+    let i = index(g:delve_instructions, tracepoint)
+    if i != -1
         call remove(g:delve_instructions, i)
         exe "sign unplace ". eval(i+1) ." file=" . a:file
     endif
 endfunction
 
+" removeBreakpoint deletes a new breakpoint to the instructions and gutter.
+function! delve#removeBreakpoint(file, line, ...)
+    let breakpoint = "break " . a:file . ':' . a:line
+
+    let i = index(g:delve_instructions, breakpoint)
+    if i != -1
+        call remove(g:delve_instructions, i)
+        exe "sign unplace ". eval(i+1) ." file=" . a:file
+    endif
+endfunction
+
+" toggleBreakpoint is toggling breakpoints at the line under the cursor.
+function! delve#toggleBreakpoint(file, line, ...)
+    let breakpoint = "break " . a:file . ':' . a:line
+
+    " Find the breakpoint in the instructions, if available. If it's already
+    " there, remove it. If not, add it.
+    if index(g:delve_instructions, breakpoint) == -1
+        call delve#addBreakpoint(a:file, a:line)
+    else
+        call delve#removeBreakpoint(a:file, a:line)
+    endif
+endfunction
+
 " toggleTracepoint is toggling tracepoints at the line under the cursor.
 function! delve#toggleTracepoint(file, line, ...)
-    let breakpoint = "break " . a:file . ':' . a:line
     let tracepoint = "trace " . a:file . ':' . a:line
-
-    " Remove breakpoint if set on the same line.
-    let t = index(g:delve_instructions, breakpoint)
-    if t != -1
-        call delve#toggleBreakpoint(a:file, a:line)
-    endif
 
     " Find the tracepoint in the instructions, if available. If it's already
     " there, remove it. If not, add it.
-    let i = index(g:delve_instructions, tracepoint)
-
-    if i == -1
-        call add(g:delve_instructions, tracepoint)
-        exe "sign place ". len(g:delve_instructions) ." line=" . a:line . " name=delve_tracepoint file=" . a:file
+    if index(g:delve_instructions, tracepoint) == -1
+        call delve#addTracepoint(a:file, a:line)
     else
-        call remove(g:delve_instructions, i)
-        exe "sign unplace ". eval(i+1) ." file=" . a:file
+        call delve#removeTracepoint(a:file, a:line)
     endif
 endfunction
 
@@ -155,8 +187,12 @@ endfunction
 "-------------------------------------------------------------------------------
 "                                 Commands
 "-------------------------------------------------------------------------------
+command! -nargs=* -bang DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'), <f-args>)
+command! -nargs=* -bang DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'), <f-args>)
 command! -nargs=* -bang DlvClearAll call delve#clearAll(<f-args>)
 command! -nargs=* -bang DlvDebug call delve#dlvDebug(expand('%:p:h'), <f-args>)
+command! -nargs=* -bang DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'), <f-args>)
+command! -nargs=* -bang DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'), <f-args>)
 command! -nargs=* -bang DlvTest call delve#dlvTest(expand('%:p:h'), <f-args>)
 command! -nargs=* -bang DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'), <f-args>)
 command! -nargs=* -bang DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'), <f-args>)
