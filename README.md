@@ -34,13 +34,14 @@ Then reload neovim and run `PlugInstall`.
 Commands
 --------
 
-- `DlvClearAll` - Clear all the breakpoints and tracepoints in the buffer.
-- `DlvDebug` - Run `dlv debug` for the current session. Use this to test `main` packages.
-- `DlvTest` - Run `dlv test` for the current session. Use this to debug non-`main` packages.
 - `DlvAddBreakpoint` - Add a breakpoint at the current line.
 - `DlvAddTracepoint` - Add a tracepoint at the current line.
+- `DlvAttach <pid>` - Attach `dlv` to a running process.
+- `DlvClearAll` - Clear all the breakpoints and tracepoints in the buffer.
+- `DlvDebug` - Run `dlv debug` for the current session. Use this to test `main` packages.
 - `DlvRemoveBreakpoint` - Remove the breakpoint at the current line.
 - `DlvRemoveTracepoint` - Remove the tracepoint at the current line.
+- `DlvTest` - Run `dlv test` for the current session. Use this to debug non-`main` packages.
 - `DlvToggleBreakpoint` - Convenience method to toggle (add or remove) a breakpoint at the current line.
 - `DlvToggleTracepoint` - Convenience method to toggle (add or remove) a tracepoint at the current line.
 

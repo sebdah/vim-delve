@@ -62,8 +62,16 @@ autocmd VimLeave * call delve#removeInstructionsFile()<cr>
 exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight
 exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g:delve_tracepoint_sign_highlight
 
+" attach is attaching dlv to a running process.
+function! delve#attach(dir, pid)
+    vnew
+    set syntax=go
+    call termopen("cd ". a:dir ." ; dlv --backend=". g:delve_backend ." attach " . a:pid)
+    startinsert
+endfunction
+
 " clearAll is removing all active breakpoints and tracepoints.
-function! delve#clearAll(...)
+function! delve#clearAll()
     call delve#removeInstructionsFile()
     for i in range(len(g:delve_instructions))
         let g:delve_instructions = []
@@ -72,31 +80,30 @@ function! delve#clearAll(...)
 endfunction
 
 " dlvDebug is calling 'dlv debug' for the currently active main package.
-function! delve#dlvDebug(dir, ...)
-    call delve#dlvCommandRunner(a:dir, "debug", "")
-endfunction
-
-" dlvTest is calling 'dlv test' for the currently active package.
-function! delve#dlvTest(dir, ...)
-    call delve#dlvCommandRunner(a:dir, "test", "")
-endfunction
-
-" dlvCommandRunner is a generic function that calls the dlv binary with various
-" flags.
-function! delve#dlvCommandRunner(dir, command, flags, ...)
+function! delve#dlvDebug(dir)
     call delve#writeInstructionsFile()
 
     vnew
     set syntax=go
-    call termopen("cd " . a:dir . " ; dlv " . a:command . " --backend=" . g:delve_backend . " --init=" . g:delve_instructions_file . " " . a:flags)
+    call termopen("cd ". a:dir ." ; dlv --backend=". g:delve_backend ." --init=". g:delve_instructions_file ." debug")
+    startinsert
+endfunction
+
+" dlvTest is calling 'dlv test' for the currently active package.
+function! delve#dlvTest(dir)
+    call delve#writeInstructionsFile()
+
+    vnew
+    set syntax=go
+    call termopen("cd ". a:dir ." ; dlv --backend=". g:delve_backend ." --init=". g:delve_instructions_file ." test")
     startinsert
 endfunction
 
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
 " tracepoint exists at the same location, it will be removed.
-function! delve#addBreakpoint(file, line, ...)
-    let breakpoint = "break " . a:file . ':' . a:line
-    let tracepoint = "trace " . a:file . ':' . a:line
+function! delve#addBreakpoint(file, line)
+    let breakpoint = "break ". a:file .":". a:line
+    let tracepoint = "trace ". a:file .":". a:line
 
     " Remove tracepoints if set on the same line.
     if index(g:delve_instructions, tracepoint) != -1
@@ -110,9 +117,9 @@ endfunction
 
 " addTracepoint adds a new tracepoint to the instructions and gutter. If a
 " breakpoint exists at the same location, it will be removed.
-function! delve#addTracepoint(file, line, ...)
-    let tracepoint = "trace " . a:file . ':' . a:line
-    let breakpoint = "break " . a:file . ':' . a:line
+function! delve#addTracepoint(file, line)
+    let breakpoint = "break ". a:file .":". a:line
+    let tracepoint = "trace ". a:file .":". a:line
 
     " Remove breakpoint if set on the same line.
     if index(g:delve_instructions, breakpoint) != -1
@@ -125,8 +132,8 @@ function! delve#addTracepoint(file, line, ...)
 endfunction
 
 " removeTracepoint deletes a new tracepoint to the instructions and gutter.
-function! delve#removeTracepoint(file, line, ...)
-    let tracepoint = "trace " . a:file . ':' . a:line
+function! delve#removeTracepoint(file, line)
+    let tracepoint = "trace ". a:file .":". a:line
 
     let i = index(g:delve_instructions, tracepoint)
     if i != -1
@@ -136,8 +143,8 @@ function! delve#removeTracepoint(file, line, ...)
 endfunction
 
 " removeBreakpoint deletes a new breakpoint to the instructions and gutter.
-function! delve#removeBreakpoint(file, line, ...)
-    let breakpoint = "break " . a:file . ':' . a:line
+function! delve#removeBreakpoint(file, line)
+    let breakpoint = "break ". a:file .":". a:line
 
     let i = index(g:delve_instructions, breakpoint)
     if i != -1
@@ -147,8 +154,8 @@ function! delve#removeBreakpoint(file, line, ...)
 endfunction
 
 " toggleBreakpoint is toggling breakpoints at the line under the cursor.
-function! delve#toggleBreakpoint(file, line, ...)
-    let breakpoint = "break " . a:file . ':' . a:line
+function! delve#toggleBreakpoint(file, line)
+    let breakpoint = "break ". a:file .":". a:line
 
     " Find the breakpoint in the instructions, if available. If it's already
     " there, remove it. If not, add it.
@@ -160,8 +167,8 @@ function! delve#toggleBreakpoint(file, line, ...)
 endfunction
 
 " toggleTracepoint is toggling tracepoints at the line under the cursor.
-function! delve#toggleTracepoint(file, line, ...)
-    let tracepoint = "trace " . a:file . ':' . a:line
+function! delve#toggleTracepoint(file, line)
+    let tracepoint = "trace ". a:file .":". a:line
 
     " Find the tracepoint in the instructions, if available. If it's already
     " there, remove it. If not, add it.
@@ -174,12 +181,12 @@ endfunction
 
 " removeInstructionsFile is removing the defined instructions file. Typically
 " called when neovim is exited.
-function! delve#removeInstructionsFile(...)
+function! delve#removeInstructionsFile()
     call delete(g:delve_instructions_file)
 endfunction
 
 " writeInstructionsFile is persisting the instructions to the set file.
-function! delve#writeInstructionsFile(...) abort
+function! delve#writeInstructionsFile() abort
     call delve#removeInstructionsFile()
     call writefile(g:delve_instructions + ["continue"], g:delve_instructions_file)
 endfunction
@@ -187,12 +194,13 @@ endfunction
 "-------------------------------------------------------------------------------
 "                                 Commands
 "-------------------------------------------------------------------------------
-command! -nargs=* -bang DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'), <f-args>)
-command! -nargs=* -bang DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'), <f-args>)
-command! -nargs=* -bang DlvClearAll call delve#clearAll(<f-args>)
-command! -nargs=* -bang DlvDebug call delve#dlvDebug(expand('%:p:h'), <f-args>)
-command! -nargs=* -bang DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'), <f-args>)
-command! -nargs=* -bang DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'), <f-args>)
-command! -nargs=* -bang DlvTest call delve#dlvTest(expand('%:p:h'), <f-args>)
-command! -nargs=* -bang DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'), <f-args>)
-command! -nargs=* -bang DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'), <f-args>)
+command! -nargs=* -bang DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'))
+command! -nargs=* -bang DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'))
+command! -nargs=* -bang DlvAttach call delve#attach(expand('%:p:h'))
+command! -nargs=* -bang DlvClearAll call delve#clearAll()
+command! -nargs=* -bang DlvDebug call delve#dlvDebug(expand('%:p:h'))
+command! -nargs=* -bang DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
+command! -nargs=* -bang DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'))
+command! -nargs=* -bang DlvTest call delve#dlvTest(expand('%:p:h'))
+command! -nargs=* -bang DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'))
+command! -nargs=* -bang DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'))
