@@ -186,7 +186,7 @@ function! delve#removeInstructionsFile()
 endfunction
 
 " writeInstructionsFile is persisting the instructions to the set file.
-function! delve#writeInstructionsFile() abort
+function! delve#writeInstructionsFile()
     call delve#removeInstructionsFile()
     call writefile(g:delve_instructions + ["continue"], g:delve_instructions_file)
 endfunction
