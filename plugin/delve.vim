@@ -10,7 +10,7 @@ endif
 
 " g:delve_cache_path sets the default vim-delve cache path for breakpoint files.
 if !exists("g:delve_cache_path")
-    let g:delve_cache_path = $HOME . "/.cache/" . v:progname . "/vim-delve"
+    let g:delve_cache_path = $HOME ."/.cache/". v:progname ."/vim-delve"
 endif
 
 " g:delve_backend is setting the backend to use for the dlv commands.
@@ -44,7 +44,7 @@ endif
 
 " g:delve_instructions_file holdes the path to the instructions file. It should
 " be reasonably unique.
-let g:delve_instructions_file = g:delve_cache_path . "/". getpid() . "." . localtime()
+let g:delve_instructions_file = g:delve_cache_path ."/". getpid() .".". localtime()
 
 "-------------------------------------------------------------------------------
 "                              Implementation
@@ -112,7 +112,7 @@ function! delve#addBreakpoint(file, line)
 
     call add(g:delve_instructions, breakpoint)
 
-    exe "sign place ". len(g:delve_instructions) ." line=" . a:line . " name=delve_breakpoint file=" . a:file
+    exe "sign place ". len(g:delve_instructions) ." line=". a:line ." name=delve_breakpoint file=". a:file
 endfunction
 
 " addTracepoint adds a new tracepoint to the instructions and gutter. If a
@@ -128,7 +128,7 @@ function! delve#addTracepoint(file, line)
 
     call add(g:delve_instructions, tracepoint)
 
-    exe "sign place ". len(g:delve_instructions) ." line=" . a:line . " name=delve_tracepoint file=" . a:file
+    exe "sign place ". len(g:delve_instructions) ." line=". a:line ." name=delve_tracepoint file=". a:file
 endfunction
 
 " removeTracepoint deletes a new tracepoint to the instructions and gutter.
@@ -138,7 +138,7 @@ function! delve#removeTracepoint(file, line)
     let i = index(g:delve_instructions, tracepoint)
     if i != -1
         call remove(g:delve_instructions, i)
-        exe "sign unplace ". eval(i+1) ." file=" . a:file
+        exe "sign unplace ". eval(i+1) ." file=". a:file
     endif
 endfunction
 
@@ -149,7 +149,7 @@ function! delve#removeBreakpoint(file, line)
     let i = index(g:delve_instructions, breakpoint)
     if i != -1
         call remove(g:delve_instructions, i)
-        exe "sign unplace ". eval(i+1) ." file=" . a:file
+        exe "sign unplace ". eval(i+1) ." file=". a:file
     endif
 endfunction
 
