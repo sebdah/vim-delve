@@ -64,15 +64,13 @@ exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g
 
 " attach is attaching dlv to a running process.
 function! delve#attach(dir, pid)
-    vnew
-    set syntax=go
-    call termopen("cd ". a:dir ." ; dlv --backend=". g:delve_backend ." attach " . a:pid)
-    startinsert
+    call delve#runCommand(a:dir, "attach ". a:pid, 0, 0)
 endfunction
 
 " clearAll is removing all active breakpoints and tracepoints.
 function! delve#clearAll()
     call delve#removeInstructionsFile()
+
     for i in range(len(g:delve_instructions))
         let g:delve_instructions = []
         exe "sign unplace ". eval(i+1)
@@ -81,22 +79,12 @@ endfunction
 
 " dlvDebug is calling 'dlv debug' for the currently active main package.
 function! delve#dlvDebug(dir)
-    call delve#writeInstructionsFile()
-
-    vnew
-    set syntax=go
-    call termopen("cd ". a:dir ." ; dlv --backend=". g:delve_backend ." --init=". g:delve_instructions_file ." debug")
-    startinsert
+    call delve#runCommand(a:dir, "debug", 1, 1)
 endfunction
 
 " dlvTest is calling 'dlv test' for the currently active package.
 function! delve#dlvTest(dir)
-    call delve#writeInstructionsFile()
-
-    vnew
-    set syntax=go
-    call termopen("cd ". a:dir ." ; dlv --backend=". g:delve_backend ." --init=". g:delve_instructions_file ." test")
-    startinsert
+    call delve#runCommand(a:dir, "test", 1, 1)
 endfunction
 
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
@@ -153,6 +141,40 @@ function! delve#removeBreakpoint(file, line)
     endif
 endfunction
 
+" removeInstructionsFile is removing the defined instructions file. Typically
+" called when neovim is exited.
+function! delve#removeInstructionsFile()
+    call delete(g:delve_instructions_file)
+endfunction
+
+" runCommand is running the dlv commands.
+"
+" dir:               Path to the cwd.
+" command:           Is the dlv command to run.
+" init:              Boolean determining if we should append the --init
+"                    parameter.
+" flushInstructions: Boolean determining if we should flush the in memory
+"                    instructions before calling dlv.
+function! delve#runCommand(dir, command, init, flushInstructions)
+    if (a:flushInstructions)
+        call delve#writeInstructionsFile()
+    endif
+
+    vnew
+    set syntax=go
+
+    let cmd = "cd ". a:dir
+    let cmd = cmd ." ; dlv --backend=". g:delve_backend
+    if (a:init)
+        let cmd = cmd ." --init=". g:delve_instructions_file
+    endif
+    let cmd = cmd ." ". a:command
+
+    call termopen(cmd)
+
+    startinsert
+endfunction
+
 " toggleBreakpoint is toggling breakpoints at the line under the cursor.
 function! delve#toggleBreakpoint(file, line)
     let breakpoint = "break ". a:file .":". a:line
@@ -177,12 +199,6 @@ function! delve#toggleTracepoint(file, line)
     else
         call delve#removeTracepoint(a:file, a:line)
     endif
-endfunction
-
-" removeInstructionsFile is removing the defined instructions file. Typically
-" called when neovim is exited.
-function! delve#removeInstructionsFile()
-    call delete(g:delve_instructions_file)
 endfunction
 
 " writeInstructionsFile is persisting the instructions to the set file.
