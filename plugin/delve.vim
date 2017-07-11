@@ -66,7 +66,7 @@ let g:delve_instructions_file = g:delve_cache_path ."/". getpid() .".". localtim
 "                              Implementation
 "-------------------------------------------------------------------------------
 " delve_instructions holds all the instructions to delve in a list.
-let g:delve_instructions = []
+let s:delve_instructions = []
 
 " Ensure that the cache path exists.
 call mkdir(g:delve_cache_path, "p")
@@ -87,8 +87,8 @@ endfunction
 function! delve#clearAll()
     call delve#removeInstructionsFile()
 
-    for i in range(len(g:delve_instructions))
-        let g:delve_instructions = []
+    for i in range(len(s:delve_instructions))
+        let s:delve_instructions = []
         exe "sign unplace ". eval(i+1)
     endfor
 endfunction
@@ -110,13 +110,13 @@ function! delve#addBreakpoint(file, line)
     let tracepoint = "trace ". a:file .":". a:line
 
     " Remove tracepoints if set on the same line.
-    if index(g:delve_instructions, tracepoint) != -1
+    if index(s:delve_instructions, tracepoint) != -1
         call delve#removeTracepoint(a:file, a:line)
     endif
 
-    call add(g:delve_instructions, breakpoint)
+    call add(s:delve_instructions, breakpoint)
 
-    exe "sign place ". len(g:delve_instructions) ." line=". a:line ." name=delve_breakpoint file=". a:file
+    exe "sign place ". len(s:delve_instructions) ." line=". a:line ." name=delve_breakpoint file=". a:file
 endfunction
 
 " addTracepoint adds a new tracepoint to the instructions and gutter. If a
@@ -126,22 +126,22 @@ function! delve#addTracepoint(file, line)
     let tracepoint = "trace ". a:file .":". a:line
 
     " Remove breakpoint if set on the same line.
-    if index(g:delve_instructions, breakpoint) != -1
+    if index(s:delve_instructions, breakpoint) != -1
         call delve#removeBreakpoint(a:file, a:line)
     endif
 
-    call add(g:delve_instructions, tracepoint)
+    call add(s:delve_instructions, tracepoint)
 
-    exe "sign place ". len(g:delve_instructions) ." line=". a:line ." name=delve_tracepoint file=". a:file
+    exe "sign place ". len(s:delve_instructions) ." line=". a:line ." name=delve_tracepoint file=". a:file
 endfunction
 
 " removeTracepoint deletes a new tracepoint to the instructions and gutter.
 function! delve#removeTracepoint(file, line)
     let tracepoint = "trace ". a:file .":". a:line
 
-    let i = index(g:delve_instructions, tracepoint)
+    let i = index(s:delve_instructions, tracepoint)
     if i != -1
-        call remove(g:delve_instructions, i)
+        call remove(s:delve_instructions, i)
         exe "sign unplace ". eval(i+1) ." file=". a:file
     endif
 endfunction
@@ -150,9 +150,9 @@ endfunction
 function! delve#removeBreakpoint(file, line)
     let breakpoint = "break ". a:file .":". a:line
 
-    let i = index(g:delve_instructions, breakpoint)
+    let i = index(s:delve_instructions, breakpoint)
     if i != -1
-        call remove(g:delve_instructions, i)
+        call remove(s:delve_instructions, i)
         exe "sign unplace ". eval(i+1) ." file=". a:file
     endif
 endfunction
@@ -209,7 +209,7 @@ function! delve#toggleBreakpoint(file, line)
 
     " Find the breakpoint in the instructions, if available. If it's already
     " there, remove it. If not, add it.
-    if index(g:delve_instructions, breakpoint) == -1
+    if index(s:delve_instructions, breakpoint) == -1
         call delve#addBreakpoint(a:file, a:line)
     else
         call delve#removeBreakpoint(a:file, a:line)
@@ -222,7 +222,7 @@ function! delve#toggleTracepoint(file, line)
 
     " Find the tracepoint in the instructions, if available. If it's already
     " there, remove it. If not, add it.
-    if index(g:delve_instructions, tracepoint) == -1
+    if index(s:delve_instructions, tracepoint) == -1
         call delve#addTracepoint(a:file, a:line)
     else
         call delve#removeTracepoint(a:file, a:line)
@@ -232,7 +232,7 @@ endfunction
 " writeInstructionsFile is persisting the instructions to the set file.
 function! delve#writeInstructionsFile()
     call delve#removeInstructionsFile()
-    call writefile(g:delve_instructions + ["continue"], g:delve_instructions_file)
+    call writefile(s:delve_instructions + ["continue"], g:delve_instructions_file)
 endfunction
 
 "-------------------------------------------------------------------------------
