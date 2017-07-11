@@ -53,14 +53,15 @@ Commands
 Configuration
 -------------
 
-| Setting                             | Default value                                    | Comment
-|-------------------------------------|--------------------------------------------------|-----------------------
-| `g:delve_backend`                   | `default`                                        |  Defines the backend to use with Delve. Please refer to the [Delve documentation](https://github.com/derekparker/delve/blob/master/Documentation/usage/dlv.md#options) for details on what you should set this value to.
-| `g:delve_breakpoint_sign_highlight` | `WarningMsg`                                     | Set the color profile for the sign.
-| `g:delve_breakpoint_sign`           | `●`                                              | Sets the sign to use to indicate breakpoints in the gutter.
-| `g:delve_cache_path`                | `$HOME . "/.cache/" . v:progname . "/vim-delve"` | The path to where the instructions file for `dlv` is stored.
-| `g:delve_tracepoint_sign_highlight` | `WarningMsg`                                     | Set the color profile for the sign.
-| `g:delve_tracepoint_sign`           | `◆`                                              | Sets the sign to use to indicate tracepoints in the gutter.
+| Setting                              | Default value                                    | Comment
+|--------------------------------------|--------------------------------------------------|-----------------------
+| `g:delve_backend`                    | `default`                                        |  Defines the backend to use with Delve. Please refer to the [Delve documentation](https://github.com/derekparker/delve/blob/master/Documentation/usage/dlv.md#options) for details on what you should set this value to.
+| `g:delve_breakpoint_sign_highlight`  | `WarningMsg`                                     | Set the color profile for the sign.
+| `g:delve_breakpoint_sign`            | `●`                                              | Sets the sign to use to indicate breakpoints in the gutter.
+| `g:delve_cache_path`                 | `$HOME . "/.cache/" . v:progname . "/vim-delve"` | The path to where the instructions file for `dlv` is stored.
+| `g:delve_enable_syntax_highlighting` | `1`                                              | Turn syntax highlighting in the `dlv` output on or off.
+| `g:delve_tracepoint_sign_highlight`  | `WarningMsg`                                     | Set the color profile for the sign.
+| `g:delve_tracepoint_sign`            | `◆`                                              | Sets the sign to use to indicate tracepoints in the gutter.
 
 The settings above can be set in your `init.vim` like this:
 

@@ -18,6 +18,12 @@ if !exists("g:delve_backend")
     let g:delve_backend = "default"
 endif
 
+" g:delve_enable_syntax_highlighting is setting whether or not we should enable
+" Go syntax highlighting in the dlv output.
+if !exists("g:delve_enable_syntax_highlighting")
+    let g:delve_enable_syntax_highlighting = 1
+end
+
 " g:delve_breakpoint_sign sets the sign to use in the gutter to indicate
 " breakpoints.
 if !exists("g:delve_breakpoint_sign")
@@ -161,7 +167,10 @@ function! delve#runCommand(dir, command, init, flushInstructions)
     endif
 
     vnew
-    set syntax=go
+
+    if (g:delve_enable_syntax_highlighting)
+        set syntax=go
+    end
 
     let cmd = "cd ". a:dir
     let cmd = cmd ." ; dlv --backend=". g:delve_backend
