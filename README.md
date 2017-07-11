@@ -7,8 +7,8 @@ works a lot nicer on Neovim with the built-in terminal, so that's what we
 recommend. But it is decent to work with on Vim if you have
 [Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim) installed.
 
-If you like this project, please star it. If you feel even more generous, please
-follow [@sebdah](https://twitter.com/sebdah)!
+*If you like this project, please star it. If you feel even more generous,
+please follow [@sebdah](https://twitter.com/sebdah) on Twitter!*
 
 Feature highlights
 ------------------
