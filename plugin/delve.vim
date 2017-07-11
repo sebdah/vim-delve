@@ -18,12 +18,6 @@ if !exists("g:delve_backend")
     let g:delve_backend = "default"
 endif
 
-" g:delve_enable_syntax_highlighting is setting whether or not we should enable
-" Go syntax highlighting in the dlv output.
-if !exists("g:delve_enable_syntax_highlighting")
-    let g:delve_enable_syntax_highlighting = 1
-end
-
 " g:delve_breakpoint_sign sets the sign to use in the gutter to indicate
 " breakpoints.
 if !exists("g:delve_breakpoint_sign")
@@ -34,6 +28,22 @@ endif
 " sign.
 if !exists("g:delve_breakpoint_sign_highlight")
     let g:delve_breakpoint_sign_highlight = "WarningMsg"
+endif
+
+" g:delve_enable_syntax_highlighting is setting whether or not we should enable
+" Go syntax highlighting in the dlv output.
+if !exists("g:delve_enable_syntax_highlighting")
+    let g:delve_enable_syntax_highlighting = 1
+end
+
+" g:delve_new_command is used to create a new window to run the terminal in.
+"
+" Supported values are:
+" - vnew         Opens a vertical window (default)
+" - new          Opens a horizontal window
+" - enew         Opens a new full screen window
+if !exists("g:delve_new_command")
+    let g:delve_new_command = "vnew"
 endif
 
 " g:delve_tracepoint_sign sets the sign to use in the gutter to indicate
@@ -166,7 +176,16 @@ function! delve#runCommand(dir, command, init, flushInstructions)
         call delve#writeInstructionsFile()
     endif
 
-    vnew
+    if g:delve_new_command == "vnew"
+        vnew
+    elseif g:delve_new_command == "enew"
+        enew
+    elseif g:delve_new_command == "new"
+        new
+    else
+        echoerr "Unsupported g:delve_new_command, ". g:delve_new_command
+        return
+    endif
 
     if (g:delve_enable_syntax_highlighting)
         set syntax=go
