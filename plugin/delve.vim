@@ -1,7 +1,8 @@
 " vim-delve - Delve debugger integration
 
-if !has("nvim")
-    echomsg "vim-delve requires neovim"
+if !has('nvim') && !exists("g:loaded_vimshell")
+    echom "vim-delve depends on Shougo/vimshell when used in Vim"
+    finish
 endif
 
 "-------------------------------------------------------------------------------
@@ -69,7 +70,11 @@ let g:delve_instructions_file = g:delve_cache_path ."/". getpid() .".". localtim
 let s:delve_instructions = []
 
 " Ensure that the cache path exists.
-call mkdir(g:delve_cache_path, "p")
+if has('nvim')
+    call mkdir(g:delve_cache_path, "p")
+else
+    silent !mkdir -p g:delve_cache_path > /dev/null 2>&1
+endif
 
 " Remove the instructions file
 autocmd VimLeave * call delve#removeInstructionsFile()<cr>
@@ -176,31 +181,47 @@ function! delve#runCommand(dir, command, init, flushInstructions)
         call delve#writeInstructionsFile()
     endif
 
-    if g:delve_new_command == "vnew"
-        vnew
-    elseif g:delve_new_command == "enew"
-        enew
-    elseif g:delve_new_command == "new"
-        new
-    else
-        echoerr "Unsupported g:delve_new_command, ". g:delve_new_command
-        return
-    endif
-
-    if (g:delve_enable_syntax_highlighting)
-        set syntax=go
-    end
-
-    let cmd = "cd ". a:dir
-    let cmd = cmd ." ; dlv --backend=". g:delve_backend
+    let cmd = "cd ". a:dir . "; "
+    let cmd = cmd ."dlv --backend=". g:delve_backend
     if (a:init)
         let cmd = cmd ." --init=". g:delve_instructions_file
     endif
     let cmd = cmd ." ". a:command
 
-    call termopen(cmd)
+    if has('nvim')
+        if g:delve_new_command == "vnew"
+            vnew
+        elseif g:delve_new_command == "enew"
+            enew
+        elseif g:delve_new_command == "new"
+            new
+        else
+            echoerr "Unsupported g:delve_new_command, ". g:delve_new_command
+            return
+        endif
 
-    startinsert
+        if (g:delve_enable_syntax_highlighting)
+            set syntax=go
+        end
+
+        call termopen(cmd)
+        startinsert
+    else
+        if g:delve_new_command == "vnew"
+            VimShellBufferDir -split
+        elseif g:delve_new_command == "enew"
+            enew
+            VimShellBufferDir
+        elseif g:delve_new_command == "new"
+            VimShellBufferDir -popup
+        else
+            echoerr "Unsupported g:delve_new_command, ". g:delve_new_command
+            return
+        endif
+
+        exe "VimShellSendString ". cmd
+        exe "VimShell"
+    endif
 endfunction
 
 " toggleBreakpoint is toggling breakpoints at the line under the cursor.

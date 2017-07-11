@@ -1,8 +1,11 @@
 vim-delve
 =========
 
-This is a `neovim` plugin for debugging [Go](https://golang.org) applications
-using [Delve](https://github.com/derekparker/delve).
+This is a Neovim and Vim plugin for debugging [Go](https://golang.org)
+applications using [Delve](https://github.com/derekparker/delve). The project
+works a lot nicer on Neovim with the built-in terminal, so that's what we
+recommend. But it is decent to work with on Vim if you have
+[Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim) installed.
 
 If you like this project, please star it. If you feel even more generous, please
 follow [@sebdah](https://twitter.com/sebdah)!
@@ -10,11 +13,11 @@ follow [@sebdah](https://twitter.com/sebdah)!
 Feature highlights
 ------------------
 
-- Go syntax highlighting of debug output
+- Go syntax highlighting of debug output (only Neovim)
 - Supports both breakpoints and tracepoints
 - Run the Delve debugger in a split view along side your code
 - Launches a Delve CLI, so all commands are supported in there
-- Leverages the Neovim terminal
+- Leverages the Neovim terminal (only on Neovim)
 - Supports `main` as well as and non-`main` packages
 
 ![animated example](https://github.com/sebdah/vim-delve/raw/master/vim-delve-demo.gif "vim-delve demo")
@@ -23,12 +26,17 @@ Requirements
 ------------
 
 - [Delve](https://github.com/derekparker/delve)
-- [neovim](https://neovim.io)
+
+If you are on vim (not neovim), you'll also need the following two packages:
+
+- [Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim)
+- [Shougo/vimproc.vim](https://github.com/Shougo/vimproc.vim)
 
 Installation
 ------------
 
-Using `vim-plug`, add the following to your `init.vim`:
+Using `vim-plug`, add the following to your `init.vim` if you're on Neovim or
+`.vimrc`, if you're on vim:
 
 `Plug 'sebdah/vim-delve'`
 
