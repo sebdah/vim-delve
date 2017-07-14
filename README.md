@@ -108,9 +108,8 @@ There are many things that this project need, but some examples could be:
     work that would be great.
 - I haven't tested the project thoroughly on Vim, if you could do that it'd be
     wonderful.
-- Answer [questions from users](https://github.com/sebdah/vim-delve/issues)
-- Implement missing `dlv` commands. By having a quick look at `dlv help` we
-    should add support for `connect`, `core`, `trace` and `version`.
+- Answer [questions from users](https://github.com/sebdah/vim-delve/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22)
+- Or implement [new features](https://github.com/sebdah/vim-delve/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement)
 
 License
 -------
