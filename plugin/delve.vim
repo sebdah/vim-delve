@@ -120,11 +120,10 @@ function! delve#dlvTest(dir, ...)
     call delve#runCommand("test", flags, a:dir)
 endfunction
 
-" dlvExec is calling dlv exec.
-function! delve#dlvExec(bin, ...)
-    let dir = (a:0 > 0) ? a:1 : "."
-    let flags = (a:0 > 1) ? a:2 : ""
-    call delve#runCommand("exec ". a:bin, flags, dir)
+" dlvCore is calling dlv core.
+function! delve#dlvCore(bin, dump, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+    call delve#runCommand("core ". a:bin ." ". a:dump, flags)
 endfunction
 
 " dlvVersion is printing the version of dlv.
@@ -295,9 +294,10 @@ endfunction
 command! -nargs=0 DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'))
 command! -nargs=+ DlvAttach call delve#dlvAttach(<f-args>)
-command! -nargs=+ DlvExec call delve#dlvExec(<f-args>)
 command! -nargs=0 DlvClearAll call delve#clearAll()
+command! -nargs=+ DlvCore call delve#dlvCore(<f-args>)
 command! -nargs=0 DlvDebug call delve#dlvDebug(expand('%:p:h'))
+command! -nargs=+ DlvExec call delve#dlvExec(<f-args>)
 command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvTest call delve#dlvTest(expand('%:p:h'))
