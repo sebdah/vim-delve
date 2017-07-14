@@ -84,7 +84,7 @@ exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g
 exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g:delve_tracepoint_sign_highlight
 
 " attach is attaching dlv to a running process.
-function! delve#attach(dir, pid)
+function! delve#attach(pid)
     call delve#runCommand("attach ". a:pid, "", ".", 0, 0)
 endfunction
 
