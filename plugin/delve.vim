@@ -94,18 +94,30 @@ function! delve#clearAll()
 endfunction
 
 " dlvAttach is attaching dlv to a running process.
-function! delve#dlvAttach(pid)
-    call delve#runCommand("attach ". a:pid, "", ".", 0, 0)
+function! delve#dlvAttach(pid, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+
+    call delve#runCommand("attach ". a:pid, flags, ".", 0, 0)
 endfunction
 
 " dlvDebug is calling 'dlv debug' for the currently active main package.
-function! delve#dlvDebug(dir)
-    call delve#runCommand("debug", "", a:dir)
+"
+" Optional arguments:
+" flags:        flags takes custom flags to pass to dlv.
+function! delve#dlvDebug(dir, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+
+    call delve#runCommand("debug", flags, a:dir)
 endfunction
 
 " dlvTest is calling 'dlv test' for the currently active package.
-function! delve#dlvTest(dir)
-    call delve#runCommand("test", "", a:dir)
+"
+" Optional arguments:
+" flags:        flags takes custom flags to pass to dlv.
+function! delve#dlvTest(dir, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+
+    call delve#runCommand("test", flags, a:dir)
 endfunction
 
 " dlvExec is calling dlv exec.
