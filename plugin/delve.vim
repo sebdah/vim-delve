@@ -85,7 +85,7 @@ exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g
 
 " attach is attaching dlv to a running process.
 function! delve#attach(dir, pid)
-    call delve#runCommand(a:dir, "attach ". a:pid, 0, 0)
+    call delve#runCommand(a:dir, "attach ". a:pid, "", 0, 0)
 endfunction
 
 " clearAll is removing all active breakpoints and tracepoints.
@@ -100,12 +100,18 @@ endfunction
 
 " dlvDebug is calling 'dlv debug' for the currently active main package.
 function! delve#dlvDebug(dir)
-    call delve#runCommand(a:dir, "debug", 1, 1)
+    call delve#runCommand(a:dir, "debug", "")
 endfunction
 
 " dlvTest is calling 'dlv test' for the currently active package.
 function! delve#dlvTest(dir)
-    call delve#runCommand(a:dir, "test", 1, 1)
+    call delve#runCommand(a:dir, "test", "")
+endfunction
+
+" exec is calling dlv exec.
+function! delve#exec(dir, bin, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+    call delve#runCommand(a:dir, "exec ". a:bin, flags)
 endfunction
 
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
@@ -172,21 +178,29 @@ endfunction
 "
 " dir:               Path to the cwd.
 " command:           Is the dlv command to run.
+" flags:             String passing additional flags to the command.
 " init:              Boolean determining if we should append the --init
 "                    parameter.
 " flushInstructions: Boolean determining if we should flush the in memory
 "                    instructions before calling dlv.
-function! delve#runCommand(dir, command, init, flushInstructions)
-    if (a:flushInstructions)
+function! delve#runCommand(dir, command, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+    let init = (a:0 > 1) ? a:2 : 1
+    let flushInstructions = (a:0 > 2) ? a:3 : 1
+
+    if (flushInstructions)
         call delve#writeInstructionsFile()
     endif
 
     let cmd = "cd ". a:dir . "; "
     let cmd = cmd ."dlv --backend=". g:delve_backend
-    if (a:init)
+    if (init)
         let cmd = cmd ." --init=". g:delve_instructions_file
     endif
     let cmd = cmd ." ". a:command
+    if (flags)
+        let cmd = cmd ." ". flags
+    endif
 
     if has('nvim')
         if g:delve_new_command == "vnew"
@@ -262,6 +276,7 @@ endfunction
 command! -nargs=0 DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'))
 command! -nargs=+ DlvAttach call delve#attach(expand('%:p:h'), <f-args>)
+command! -nargs=+ DlvExec call delve#exec(expand('%:p:h'), <f-args>)
 command! -nargs=0 DlvClearAll call delve#clearAll()
 command! -nargs=0 DlvDebug call delve#dlvDebug(expand('%:p:h'))
 command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
