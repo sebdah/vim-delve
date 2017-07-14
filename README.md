@@ -92,6 +92,25 @@ could not launch process: exec: "lldb-server": executa ble file not found in $PA
 
 Example: `let g:delve_backend = "native"`
 
+Contributing to vim-delve
+-------------------------
+
+Contributions to the project is most welcome. I'd be happy to review and merge
+pull requests. If you need any directions in your implementation we can always
+discuss that too.
+
+### What can I do to help?
+
+There are many things that this project need, but some examples could be:
+
+- I don't know if this works on Windows. If you could try it out and or make it
+    work that would be great.
+- I haven't tested the project thoroughly on Vim, if you could do that it'd be
+    wonderful.
+- Answer [questions from users](https://github.com/sebdah/vim-delve/issues)
+- Implement missing `dlv` commands. By having a quick look at `dlv help` we
+    should add support for `connect`, `core`, `trace` and `version`.
+
 License
 -------
 
