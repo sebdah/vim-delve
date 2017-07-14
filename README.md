@@ -57,6 +57,7 @@ Commands
 | `DlvTest`             | Run `dlv test` for the current session. Use this to debug non-`main` packages.
 | `DlvToggleBreakpoint` | Convenience method to toggle (add or remove) a breakpoint at the current line.
 | `DlvToggleTracepoint` | Convenience method to toggle (add or remove) a tracepoint at the current line.
+| `DlvVersion`          | Print the `dlv` version.
 
 Configuration
 -------------
