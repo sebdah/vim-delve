@@ -73,7 +73,7 @@ let s:delve_instructions = []
 if has('nvim')
     call mkdir(g:delve_cache_path, "p")
 else
-    silent !mkdir -p g:delve_cache_path > /dev/null 2>&1
+    silent exec "!mkdir -p " . g:delve_cache_path
 endif
 
 " Remove the instructions file
