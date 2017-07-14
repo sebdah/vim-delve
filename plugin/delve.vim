@@ -108,6 +108,11 @@ function! delve#dlvTest(dir)
     call delve#runCommand(a:dir, "test", 1, 1)
 endfunction
 
+" dlvVersion is printing the version of dlv.
+function! delve#dlvVersion()
+    !dlv version
+endfunction
+
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
 " tracepoint exists at the same location, it will be removed.
 function! delve#addBreakpoint(file, line)
@@ -269,3 +274,4 @@ command! -nargs=0 DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'),
 command! -nargs=0 DlvTest call delve#dlvTest(expand('%:p:h'))
 command! -nargs=0 DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvVersion call delve#dlvVersion()
