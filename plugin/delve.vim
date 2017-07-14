@@ -85,7 +85,7 @@ exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g
 
 " attach is attaching dlv to a running process.
 function! delve#attach(dir, pid)
-    call delve#runCommand(a:dir, "attach ". a:pid, "", 0, 0)
+    call delve#runCommand("attach ". a:pid, "", ".", 0, 0)
 endfunction
 
 " clearAll is removing all active breakpoints and tracepoints.
@@ -100,18 +100,19 @@ endfunction
 
 " dlvDebug is calling 'dlv debug' for the currently active main package.
 function! delve#dlvDebug(dir)
-    call delve#runCommand(a:dir, "debug", "")
+    call delve#runCommand("debug", "", a:dir)
 endfunction
 
 " dlvTest is calling 'dlv test' for the currently active package.
 function! delve#dlvTest(dir)
-    call delve#runCommand(a:dir, "test", "")
+    call delve#runCommand("test", "", a:dir)
 endfunction
 
 " exec is calling dlv exec.
-function! delve#exec(dir, bin, ...)
-    let flags = (a:0 > 0) ? a:1 : ""
-    call delve#runCommand(a:dir, "exec ". a:bin, flags)
+function! delve#exec(bin, ...)
+    let dir = (a:0 > 0) ? a:1 : "."
+    let flags = (a:0 > 1) ? a:2 : ""
+    call delve#runCommand("exec ". a:bin, flags, dir)
 endfunction
 
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
@@ -176,29 +177,30 @@ endfunction
 
 " runCommand is running the dlv commands.
 "
-" dir:               Path to the cwd.
 " command:           Is the dlv command to run.
 " flags:             String passing additional flags to the command.
+" dir:               Path to the cwd.
 " init:              Boolean determining if we should append the --init
 "                    parameter.
 " flushInstructions: Boolean determining if we should flush the in memory
 "                    instructions before calling dlv.
-function! delve#runCommand(dir, command, ...)
+function! delve#runCommand(command, ...)
     let flags = (a:0 > 0) ? a:1 : ""
-    let init = (a:0 > 1) ? a:2 : 1
-    let flushInstructions = (a:0 > 2) ? a:3 : 1
+    let dir = (a:0 > 1) ? a:2 : "."
+    let init = (a:0 > 2) ? a:3 : 1
+    let flushInstructions = (a:0 > 3) ? a:4 : 1
 
     if (flushInstructions)
         call delve#writeInstructionsFile()
     endif
 
-    let cmd = "cd ". a:dir . "; "
+    let cmd = "cd ". dir . "; "
     let cmd = cmd ."dlv --backend=". g:delve_backend
     if (init)
         let cmd = cmd ." --init=". g:delve_instructions_file
     endif
     let cmd = cmd ." ". a:command
-    if (flags)
+    if (flags != "")
         let cmd = cmd ." ". flags
     endif
 
@@ -275,8 +277,8 @@ endfunction
 "-------------------------------------------------------------------------------
 command! -nargs=0 DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'))
-command! -nargs=+ DlvAttach call delve#attach(expand('%:p:h'), <f-args>)
-command! -nargs=+ DlvExec call delve#exec(expand('%:p:h'), <f-args>)
+command! -nargs=+ DlvAttach call delve#attach(<f-args>)
+command! -nargs=+ DlvExec call delve#exec(<f-args>)
 command! -nargs=0 DlvClearAll call delve#clearAll()
 command! -nargs=0 DlvDebug call delve#dlvDebug(expand('%:p:h'))
 command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
