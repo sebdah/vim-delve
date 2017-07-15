@@ -83,54 +83,6 @@ autocmd VimLeave * call delve#removeInstructionsFile()<cr>
 exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight
 exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g:delve_tracepoint_sign_highlight
 
-" clearAll is removing all active breakpoints and tracepoints.
-function! delve#clearAll()
-    call delve#removeInstructionsFile()
-
-    for i in range(len(s:delve_instructions))
-        let s:delve_instructions = []
-        exe "sign unplace ". eval(i+1)
-    endfor
-endfunction
-
-" dlvAttach is attaching dlv to a running process.
-function! delve#dlvAttach(pid, ...)
-    let flags = (a:0 > 0) ? a:1 : ""
-
-    call delve#runCommand("attach ". a:pid, flags, ".", 0, 0)
-endfunction
-
-" dlvDebug is calling 'dlv debug' for the currently active main package.
-"
-" Optional arguments:
-" flags:        flags takes custom flags to pass to dlv.
-function! delve#dlvDebug(dir, ...)
-    let flags = (a:0 > 0) ? a:1 : ""
-
-    call delve#runCommand("debug", flags, a:dir)
-endfunction
-
-" dlvTest is calling 'dlv test' for the currently active package.
-"
-" Optional arguments:
-" flags:        flags takes custom flags to pass to dlv.
-function! delve#dlvTest(dir, ...)
-    let flags = (a:0 > 0) ? a:1 : ""
-
-    call delve#runCommand("test", flags, a:dir)
-endfunction
-
-" dlvCore is calling dlv core.
-function! delve#dlvCore(bin, dump, ...)
-    let flags = (a:0 > 0) ? a:1 : ""
-    call delve#runCommand("core ". a:bin ." ". a:dump, flags)
-endfunction
-
-" dlvVersion is printing the version of dlv.
-function! delve#dlvVersion()
-    !dlv version
-endfunction
-
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
 " tracepoint exists at the same location, it will be removed.
 function! delve#addBreakpoint(file, line)
@@ -161,6 +113,54 @@ function! delve#addTracepoint(file, line)
     call add(s:delve_instructions, tracepoint)
 
     exe "sign place ". len(s:delve_instructions) ." line=". a:line ." name=delve_tracepoint file=". a:file
+endfunction
+
+" clearAll is removing all active breakpoints and tracepoints.
+function! delve#clearAll()
+    call delve#removeInstructionsFile()
+
+    for i in range(len(s:delve_instructions))
+        let s:delve_instructions = []
+        exe "sign unplace ". eval(i+1)
+    endfor
+endfunction
+
+" dlvAttach is attaching dlv to a running process.
+function! delve#dlvAttach(pid, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+
+    call delve#runCommand("attach ". a:pid, flags, ".", 0, 0)
+endfunction
+
+" dlvCore is calling dlv core.
+function! delve#dlvCore(bin, dump, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+    call delve#runCommand("core ". a:bin ." ". a:dump, flags)
+endfunction
+
+" dlvDebug is calling 'dlv debug' for the currently active main package.
+"
+" Optional arguments:
+" flags:        flags takes custom flags to pass to dlv.
+function! delve#dlvDebug(dir, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+
+    call delve#runCommand("debug", flags, a:dir)
+endfunction
+
+" dlvTest is calling 'dlv test' for the currently active package.
+"
+" Optional arguments:
+" flags:        flags takes custom flags to pass to dlv.
+function! delve#dlvTest(dir, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+
+    call delve#runCommand("test", flags, a:dir)
+endfunction
+
+" dlvVersion is printing the version of dlv.
+function! delve#dlvVersion()
+    !dlv version
 endfunction
 
 " removeTracepoint deletes a new tracepoint to the instructions and gutter.
