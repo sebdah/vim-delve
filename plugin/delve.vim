@@ -126,6 +126,9 @@ function! delve#clearAll()
 endfunction
 
 " dlvAttach is attaching dlv to a running process.
+"
+" Optional arguments:
+" flags:        flags takes custom flags to pass to dlv.
 function! delve#dlvAttach(pid, ...)
     let flags = (a:0 > 0) ? a:1 : ""
 
