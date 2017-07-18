@@ -117,12 +117,12 @@ endfunction
 
 " clearAll is removing all active breakpoints and tracepoints.
 function! delve#clearAll()
-    call delve#removeInstructionsFile()
-
     for i in range(len(s:delve_instructions))
-        let s:delve_instructions = []
         exe "sign unplace ". eval(i+1)
     endfor
+
+    let s:delve_instructions = []
+    call delve#removeInstructionsFile()
 endfunction
 
 " dlvAttach is attaching dlv to a running process.
