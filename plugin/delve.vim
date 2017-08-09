@@ -151,6 +151,18 @@ function! delve#dlvDebug(dir, ...)
     call delve#runCommand("debug", flags, a:dir)
 endfunction
 
+" dlvExec is calling dlv exec.
+"
+" Optional arguments:
+" dir:          dir is the directory to execute from. It's the current dir by
+"               default.
+" flags:        flags takes custom flags to pass to dlv.
+function! delve#dlvExec(bin, ...)
+    let dir = (a:0 > 0) ? a:1 : "."
+    let flags = (a:0 > 1) ? a:2 : ""
+    call delve#runCommand("exec ". a:bin, flags, dir)
+endfunction
+
 " dlvTest is calling 'dlv test' for the currently active package.
 "
 " Optional arguments:
