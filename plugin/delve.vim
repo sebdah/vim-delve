@@ -77,7 +77,7 @@ else
 endif
 
 " Remove the instructions file
-autocmd VimLeave * call delve#removeInstructionsFile()<cr>
+autocmd VimLeave * call delve#removeInstructionsFile()
 
 " Configure the breakpoint and tracepoint signs in the gutter.
 exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight
