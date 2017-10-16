@@ -135,6 +135,17 @@ function! delve#dlvAttach(pid, ...)
     call delve#runCommand("attach ". a:pid, flags, ".", 0, 0)
 endfunction
 
+" dlvConnect is calling dlv connect.
+"
+" Optional arguments:
+" address:      host:port to connect to.
+" flags:        flags takes custom flags to pass to dlv.
+function! delve#dlvConnect(address, ...)
+    let flags = (a:0 > 0) ? a:1 : ""
+
+    call delve#runCommand("connect ". a:address, flags)
+endfunction
+
 " dlvCore is calling dlv core.
 function! delve#dlvCore(bin, dump, ...)
     let flags = (a:0 > 0) ? a:1 : ""
@@ -311,6 +322,7 @@ command! -nargs=0 DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line(
 command! -nargs=+ DlvAttach call delve#dlvAttach(<f-args>)
 command! -nargs=0 DlvClearAll call delve#clearAll()
 command! -nargs=+ DlvCore call delve#dlvCore(<f-args>)
+command! -nargs=+ DlvConnect call delve#dlvConnect(<f-args>)
 command! -nargs=* DlvDebug call delve#dlvDebug(expand('%:p:h'), <f-args>)
 command! -nargs=+ DlvExec call delve#dlvExec(<f-args>)
 command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
