@@ -52,6 +52,7 @@ Commands
 | `DlvAttach <pid> [flags]`      | Attach `dlv` to a running process.
 | `DlvClearAll`                  | Clear all the breakpoints and tracepoints in the buffer.
 | `DlvCore <bin> <dump> [flags]` | Debug core dumps using `dlv core`.
+| `DlvConnect host:port [flags]` | Connect to a remote Delve server on the given host:port.
 | `DlvDebug [flags]`             | Run `dlv debug` for the current session. Use this to test `main` packages.
 | `DlvExec <bin> [flags]`        | Start `dlv` on a pre-built executable.
 | `DlvRemoveBreakpoint`          | Remove the breakpoint at the current line.
