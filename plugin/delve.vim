@@ -179,7 +179,7 @@ endfunction
 " Optional arguments:
 " flags:        flags takes custom flags to pass to dlv.
 function! delve#dlvTest(dir, ...)
-    let flags = (a:0 > 0) ? a:1 : ""
+    let flags = (a:0 > 0) ? join(a:000) : ""
 
     call delve#runCommand("test", flags, a:dir)
 endfunction
@@ -327,7 +327,7 @@ command! -nargs=* DlvDebug call delve#dlvDebug(expand('%:p:h'), <f-args>)
 command! -nargs=+ DlvExec call delve#dlvExec(<f-args>)
 command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'))
-command! -nargs=0 DlvTest call delve#dlvTest(expand('%:p:h'))
+command! -nargs=* DlvTest call delve#dlvTest(expand('%:p:h'), <f-args>)
 command! -nargs=0 DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'))
 command! -nargs=0 DlvVersion call delve#dlvVersion()
