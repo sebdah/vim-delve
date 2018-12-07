@@ -1,7 +1,10 @@
 " vim-delve - Delve debugger integration
 
-if !has('nvim') && !exists("g:loaded_vimshell")
-    echom "vim-delve depends on Shougo/vimshell when used in Vim"
+let s:use_termopen = exists('*termopen')
+let s:use_term_start = exists('*term_start')
+
+if !s:use_termopen && !s:use_term_start && !exists("g:loaded_vimshell")
+    echom "vim-delve depends on terminal feature or Shougo/vimshell"
     finish
 endif
 
@@ -247,7 +250,7 @@ function! delve#runCommand(command, ...)
         let cmd = cmd ." ". flags
     endif
 
-    if has('nvim')
+    if s:use_termopen || s:use_term_start
         if g:delve_new_command == "vnew"
             vnew
         elseif g:delve_new_command == "enew"
@@ -259,11 +262,15 @@ function! delve#runCommand(command, ...)
             return
         endif
 
-        if (g:delve_enable_syntax_highlighting)
+        if g:delve_enable_syntax_highlighting
             set syntax=go
         end
 
-        call termopen(cmd)
+        if s:use_termopen
+            call termopen(cmd)
+        else
+            call term_start([&shell, &shellcmdflag, cmd], { 'curwin': 1 })
+        endif
         startinsert
     else
         if g:delve_new_command == "vnew"
