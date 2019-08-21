@@ -322,6 +322,10 @@ function! delve#writeInstructionsFile()
     call writefile(s:delve_instructions + ["continue"], g:delve_instructions_file)
 endfunction
 
+function! delve#getInitInstructions()
+    return s:delve_instructions
+endfunction
+
 "-------------------------------------------------------------------------------
 "                                 Commands
 "-------------------------------------------------------------------------------
