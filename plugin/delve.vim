@@ -66,6 +66,16 @@ endif
 " be reasonably unique.
 let g:delve_instructions_file = g:delve_cache_path ."/". getpid() .".". localtime()
 
+" g:delve_use_vimux is setting whether to use vimux to run the dlv command
+" in an adjacent tmux pane instead of inside vim.
+if !exists("g:delve_use_vimux")
+    let g:delve_use_vimux = 0
+endif
+if g:delve_use_vimux && !exists("g:loaded_vimux")
+    echom "vim-delve with g:delve_use_vimux depends on benmills/vimux"
+    finish
+endif
+
 "-------------------------------------------------------------------------------
 "                              Implementation
 "-------------------------------------------------------------------------------
@@ -241,7 +251,10 @@ function! delve#runCommand(command, ...)
     endif
 
     let cmd = "cd ". dir . "; "
-    let cmd = cmd ."dlv --backend=". g:delve_backend
+    let cmd = cmd ."dlv"
+    if g:delve_backend != "default"
+        let cmd = cmd ." --backend=". g:delve_backend
+    endif
     if (init)
         let cmd = cmd ." --init=". g:delve_instructions_file
     endif
@@ -250,7 +263,10 @@ function! delve#runCommand(command, ...)
         let cmd = cmd ." ". flags
     endif
 
-    if s:use_termopen || s:use_term_start
+    if g:delve_use_vimux
+        let cmd = cmd ."; cd -"
+        call VimuxRunCommand(cmd)
+    elseif s:use_termopen || s:use_term_start
         if g:delve_new_command == "vnew"
             vnew
         elseif g:delve_new_command == "enew"

@@ -19,6 +19,7 @@ Feature highlights
 - Launches a Delve CLI, so all commands are supported in there
 - Leverages the Neovim terminal (only on Neovim)
 - Supports `main` as well as and non-`main` packages
+- Supports [vimux](https://github.com/benmills/vimux) optionally
 
 ![animated example](https://github.com/sebdah/vim-delve/raw/master/vim-delve-demo.gif "vim-delve demo")
 
@@ -31,6 +32,10 @@ If you are on vim (not neovim), you'll also need the following two packages:
 
 - [Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim)
 - [Shougo/vimproc.vim](https://github.com/Shougo/vimproc.vim)
+
+If you wish to use vimux:
+
+- [benmills/vimux](https://github.com/benmills/vimux)
 
 Installation
 ------------
@@ -75,6 +80,7 @@ Configuration
 | `g:delve_new_command`                | `vnew`                                           | Control if `dlv` should be opened in a vertical (`vnew`), horizontal (`new`) or full screen window (`enew`).
 | `g:delve_tracepoint_sign_highlight`  | `WarningMsg`                                     | Set the color profile for the sign.
 | `g:delve_tracepoint_sign`            | `◆`                                              | Sets the sign to use to indicate tracepoints in the gutter.
+| `g:delve_use_vimux      `            | `0`                                              | Sets whether to use [benmills/vimux](https://github.com/benmills/vimux)].
 
 The settings above can be set in your `init.vim` like this:
 
