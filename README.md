@@ -81,6 +81,7 @@ Configuration
 | `g:delve_tracepoint_sign_highlight`  | `WarningMsg`                                     | Set the color profile for the sign.
 | `g:delve_tracepoint_sign`            | `◆`                                              | Sets the sign to use to indicate tracepoints in the gutter.
 | `g:delve_use_vimux      `            | `0`                                              | Sets whether to use [benmills/vimux](https://github.com/benmills/vimux)].
+| `g:delve_project_root`               |                                                  | Override the path to use for setting breakpoints/tracepoints.
 
 The settings above can be set in your `init.vim` like this:
 
