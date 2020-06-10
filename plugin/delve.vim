@@ -231,6 +231,16 @@ function! delve#removeInstructionsFile()
     call delete(g:delve_instructions_file)
 endfunction
 
+" getFile returns the file location either from the expanded path or
+" configured 'g:delve_project_root'
+function! delve#getFile()
+    if !exists("g:delve_project_root")
+        return expand('%:p')
+    endif
+
+    return g:delve_project_root . expand('%')
+endfunction
+
 " runCommand is running the dlv commands.
 "
 " command:           Is the dlv command to run.
@@ -345,17 +355,17 @@ endfunction
 "-------------------------------------------------------------------------------
 "                                 Commands
 "-------------------------------------------------------------------------------
-command! -nargs=0 DlvAddBreakpoint call delve#addBreakpoint(expand('%:p'), line('.'))
-command! -nargs=0 DlvAddTracepoint call delve#addTracepoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvAddBreakpoint call delve#addBreakpoint(delve#getFile(), line('.'))
+command! -nargs=0 DlvAddTracepoint call delve#addTracepoint(delve#getFile(), line('.'))
 command! -nargs=+ DlvAttach call delve#dlvAttach(<f-args>)
 command! -nargs=0 DlvClearAll call delve#clearAll()
 command! -nargs=+ DlvCore call delve#dlvCore(<f-args>)
 command! -nargs=+ DlvConnect call delve#dlvConnect(<f-args>)
 command! -nargs=* DlvDebug call delve#dlvDebug(expand('%:p:h'), <f-args>)
 command! -nargs=+ DlvExec call delve#dlvExec(<f-args>)
-command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(expand('%:p'), line('.'))
-command! -nargs=0 DlvRemoveTracepoint call delve#removeTracepoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(delve#getFile(), line('.'))
+command! -nargs=0 DlvRemoveTracepoint call delve#removeTracepoint(delve#getFile(), line('.'))
 command! -nargs=* DlvTest call delve#dlvTest(expand('%:p:h'), <f-args>)
-command! -nargs=0 DlvToggleBreakpoint call delve#toggleBreakpoint(expand('%:p'), line('.'))
-command! -nargs=0 DlvToggleTracepoint call delve#toggleTracepoint(expand('%:p'), line('.'))
+command! -nargs=0 DlvToggleBreakpoint call delve#toggleBreakpoint(delve#getFile(), line('.'))
+command! -nargs=0 DlvToggleTracepoint call delve#toggleTracepoint(delve#getFile(), line('.'))
 command! -nargs=0 DlvVersion call delve#dlvVersion()
