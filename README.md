@@ -26,16 +26,20 @@ Feature highlights
 Requirements
 ------------
 
+For Neovim and Vim 8, you really only need Delve to get started.
+
 - [Delve](https://github.com/derekparker/delve)
 
-If you are on vim (not neovim), you'll also need the following two packages:
+If you wish to use the vimux support, you'd need to have this plugin as well:
+
+- [benmills/vimux](https://github.com/benmills/vimux)
+
+### Requirements for Vim 7 and earlier
+
+If you are on Vim versions older than 8, you'll also need the following two packages:
 
 - [Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim)
 - [Shougo/vimproc.vim](https://github.com/Shougo/vimproc.vim)
-
-If you wish to use vimux:
-
-- [benmills/vimux](https://github.com/benmills/vimux)
 
 Installation
 ------------
