@@ -81,6 +81,8 @@ endif
 "-------------------------------------------------------------------------------
 " delve_instructions holds all the instructions to delve in a list.
 let s:delve_instructions = []
+" delve_instructions_signs holds instructions sign id
+let s:delve_instructions_signs = {}
 
 " Ensure that the cache path exists.
 if has('nvim')
@@ -97,6 +99,19 @@ autocmd VimLeave * call delve#removeInstructionsFile()
 exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight
 exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g:delve_tracepoint_sign_highlight
 
+" addSign adds sign with unique id
+function! delve#addSign(instruction, file, line, name)
+    let id = eval(max(s:delve_instructions_signs)+1)
+    let s:delve_instructions_signs[a:instruction] = id
+    exe "sign place ". id ." line=". a:line ." name=". a:name ." file=". a:file
+endfunction
+
+" removeSign removes sign by instruction
+function! delve#removeSign(instruction)
+    let id = remove(s:delve_instructions_signs, a:instruction)
+    exe "sign unplace ". id
+endfunction
+
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
 " tracepoint exists at the same location, it will be removed.
 function! delve#addBreakpoint(file, line)
@@ -109,8 +124,7 @@ function! delve#addBreakpoint(file, line)
     endif
 
     call add(s:delve_instructions, breakpoint)
-
-    exe "sign place ". len(s:delve_instructions) ." line=". a:line ." name=delve_breakpoint file=". a:file
+    call delve#addSign(breakpoint, a:file, a:line, "delve_breakpoint")
 endfunction
 
 " addTracepoint adds a new tracepoint to the instructions and gutter. If a
@@ -126,13 +140,13 @@ function! delve#addTracepoint(file, line)
 
     call add(s:delve_instructions, tracepoint)
 
-    exe "sign place ". len(s:delve_instructions) ." line=". a:line ." name=delve_tracepoint file=". a:file
+    call delve#addSign(tracepoint, a:file, a:line, "delve_tracepoint")
 endfunction
 
 " clearAll is removing all active breakpoints and tracepoints.
 function! delve#clearAll()
-    for i in range(len(s:delve_instructions))
-        exe "sign unplace ". eval(i+1)
+    for i in s:delve_instructions
+        call delve#removeSign(i)
     endfor
 
     let s:delve_instructions = []
@@ -210,7 +224,7 @@ function! delve#removeTracepoint(file, line)
     let i = index(s:delve_instructions, tracepoint)
     if i != -1
         call remove(s:delve_instructions, i)
-        exe "sign unplace ". eval(i+1) ." file=". a:file
+        call delve#removeSign(tracepoint)
     endif
 endfunction
 
@@ -221,7 +235,7 @@ function! delve#removeBreakpoint(file, line)
     let i = index(s:delve_instructions, breakpoint)
     if i != -1
         call remove(s:delve_instructions, i)
-        exe "sign unplace ". eval(i+1) ." file=". a:file
+        call delve#removeSign(breakpoint)
     endif
 endfunction
 
