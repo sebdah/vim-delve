@@ -64,7 +64,9 @@ endif
 
 " g:delve_instructions_file holdes the path to the instructions file. It should
 " be reasonably unique.
-let g:delve_instructions_file = g:delve_cache_path ."/". getpid() .".". localtime()
+if !exists("g:delve_instructions_file")
+    let g:delve_instructions_file = g:delve_cache_path ."/". getpid() .".". localtime()
+endif
 
 " g:delve_use_vimux is setting whether to use vimux to run the dlv command
 " in an adjacent tmux pane instead of inside vim.
