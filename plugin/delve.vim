@@ -2,6 +2,7 @@
 
 let s:use_termopen = exists('*termopen')
 let s:use_term_start = exists('*term_start')
+let s:sign_parameters = ""
 
 if !s:use_termopen && !s:use_term_start && !exists("g:loaded_vimshell")
     echom "vim-delve depends on terminal feature or Shougo/vimshell"
@@ -62,6 +63,16 @@ if !exists("g:delve_tracepoint_sign_highlight")
     let g:delve_tracepoint_sign_highlight = "WarningMsg"
 endif
 
+" g:delve_sign_group sets the sign group.
+if !exists("g:delve_sign_group")
+    let g:delve_sign_group = "delve"
+endif
+
+" g:delve_sign_priority sets the sign priority.
+if !exists("g:delve_sign_priority")
+    let g:delve_sign_priority = 10
+endif
+
 " g:delve_instructions_file holdes the path to the instructions file. It should
 " be reasonably unique.
 if !exists("g:delve_instructions_file")
@@ -76,6 +87,12 @@ endif
 if g:delve_use_vimux && !exists("g:loaded_vimux")
     echom "vim-delve with g:delve_use_vimux depends on benmills/vimux"
     finish
+endif
+
+" Priority and groups are supported since version 8.1.0658.
+if has("patch8.1.0658")
+    let s:sign_parameters = s:sign_parameters ." group=". g:delve_sign_group
+    let s:sign_parameters = s:sign_parameters ." priority=". g:delve_sign_priority
 endif
 
 "-------------------------------------------------------------------------------
@@ -105,13 +122,13 @@ exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g
 function! delve#addSign(instruction, file, line, name)
     let id = eval(max(s:delve_instructions_signs)+1)
     let s:delve_instructions_signs[a:instruction] = id
-    exe "sign place ". id ." line=". a:line ." name=". a:name ." file=". a:file
+    exe "sign place ". id . s:sign_parameters ." line=". a:line ." name=". a:name ." file=". a:file
 endfunction
 
 " removeSign removes sign by instruction
 function! delve#removeSign(instruction)
     let id = remove(s:delve_instructions_signs, a:instruction)
-    exe "sign unplace ". id
+    exe "sign unplace ". id . s:sign_parameters
 endfunction
 
 " addBreakpoint adds a new breakpoint to the instructions and gutter. If a
