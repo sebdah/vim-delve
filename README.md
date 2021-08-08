@@ -2,7 +2,7 @@ vim-delve
 =========
 
 This is a Neovim and Vim plugin for debugging [Go](https://golang.org)
-applications using [Delve](https://github.com/derekparker/delve). The project
+applications using [Delve](https://github.com/go-delve/delve). The project
 works a lot nicer on Neovim with the built-in terminal, so that's what we
 recommend. But it is decent to work with on Vim if you have
 [Shougo/vimshell.vim](https://github.com/Shougo/vimshell.vim) installed.
@@ -28,7 +28,7 @@ Requirements
 
 For Neovim and Vim 8, you really only need Delve to get started.
 
-- [Delve](https://github.com/derekparker/delve)
+- [Delve](https://github.com/go-delve/delve)
 
 If you wish to use the vimux support, you'd need to have this plugin as well:
 
@@ -76,7 +76,7 @@ Configuration
 
 | Setting                              | Default value                                         | Comment
 |--------------------------------------|-------------------------------------------------------|-----------------------
-| `g:delve_backend`                    | `default`                                             | Defines the backend to use with Delve. Please refer to the [Delve documentation](https://github.com/derekparker/delve/blob/master/Documentation/usage/dlv.md#options) for details on what you should set this value to.
+| `g:delve_backend`                    | `default`                                             | Defines the backend to use with Delve. Please refer to the [Delve documentation](https://github.com/go-delve/delve/blob/master/Documentation/usage/dlv.md#options) for details on what you should set this value to.
 | `g:delve_sign_group`                 | `delve`                                               | Set the sign group.
 | `g:delve_sign_priority`              | 10                                                    | Set the sign priority.
 | `g:delve_breakpoint_sign_highlight`  | `WarningMsg`                                          | Set the color profile for the sign.
