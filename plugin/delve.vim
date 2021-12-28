@@ -319,12 +319,13 @@ function! delve#runCommand(command, ...)
     let dir = (a:0 > 1) ? a:2 : "."
     let init = (a:0 > 2) ? a:3 : 1
     let flushInstructions = (a:0 > 3) ? a:4 : 1
+    let cmdSep = has("win32") ? "&" : ";"
 
     if (flushInstructions)
         call delve#writeInstructionsFile()
     endif
 
-    let cmd = "cd ". dir . "; "
+    let cmd = "cd ". dir . cmdSep . " "
     let cmd = cmd ."dlv"
     if g:delve_backend != "default"
         let cmd = cmd ." --backend=". g:delve_backend
@@ -338,7 +339,7 @@ function! delve#runCommand(command, ...)
     endif
 
     if g:delve_use_vimux
-        let cmd = cmd ."; cd -"
+        let cmd = cmd . cmdSep . " cd -"
         call VimuxRunCommand(cmd)
     elseif s:use_termopen || s:use_term_start
         if g:delve_new_command == "vnew"
