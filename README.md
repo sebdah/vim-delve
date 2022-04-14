@@ -67,6 +67,7 @@ Commands
 | `DlvRemoveBreakpoint`          | Remove the breakpoint at the current line.
 | `DlvRemoveTracepoint`          | Remove the tracepoint at the current line.
 | `DlvTest [flags]`              | Run `dlv test` for the current session. Use this to debug non-`main` packages.
+| `DlvTestCurrent [flags]`     | Run `dlv test` for the current test or function. Use this to debug non-`main` packages.
 | `DlvToggleBreakpoint`          | Convenience method to toggle (add or remove) a breakpoint at the current line.
 | `DlvToggleTracepoint`          | Convenience method to toggle (add or remove) a tracepoint at the current line.
 | `DlvVersion`                   | Print the `dlv` version.
