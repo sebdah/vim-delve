@@ -87,6 +87,7 @@ Configuration
 | `g:delve_cache_path`                 | `$HOME . "/.cache/" . v:progname . "/vim-delve"`      | The path to where the instructions file for `dlv` is stored.
 | `g:delve_instructions_file`          | `g:delve_cache_path ."/". getpid() .".". localtime()` | The instructions file name.
 | `g:delve_enable_syntax_highlighting` | `1`                                                   | Turn syntax highlighting in the `dlv` output on or off.
+| `g:delve_enable_linenr_highlighting` | `0`                                                   | Turn line number highlighting on or off.
 | `g:delve_new_command`                | `vnew`                                                | Control if `dlv` should be opened in a vertical (`vnew`), horizontal (`new`) or full screen window (`enew`).
 | `g:delve_use_vimux      `            | `0`                                                   | Sets whether to use [benmills/vimux](https://github.com/benmills/vimux)].
 | `g:delve_project_root`               |                                                       | Override the path to use for setting breakpoints/tracepoints.

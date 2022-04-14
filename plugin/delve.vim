@@ -35,6 +35,12 @@ if !exists("g:delve_breakpoint_sign_highlight")
     let g:delve_breakpoint_sign_highlight = "WarningMsg"
 endif
 
+" g:delve_enable_linenr_highlighting is setting whether or not we should enable
+" line number highlighting.
+if !exists("g:delve_enable_linenr_highlighting")
+    let g:delve_enable_linenr_highlighting = 0
+end
+
 " g:delve_enable_syntax_highlighting is setting whether or not we should enable
 " Go syntax highlighting in the dlv output.
 if !exists("g:delve_enable_syntax_highlighting")
@@ -113,8 +119,13 @@ endif
 autocmd VimLeave * call delve#removeInstructionsFile()
 
 " Configure the breakpoint and tracepoint signs in the gutter.
-exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight
-exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g:delve_tracepoint_sign_highlight
+if g:delve_enable_linenr_highlighting == 1 && has('nvim-0.3.2')
+    exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight ." numhl=". g:delve_breakpoint_sign_highlight
+    exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g:delve_tracepoint_sign_highlight ." numhl=". g:delve_tracepoint_sign_highlight
+else
+    exe "sign define delve_breakpoint text=". g:delve_breakpoint_sign ." texthl=". g:delve_breakpoint_sign_highlight
+    exe "sign define delve_tracepoint text=". g:delve_tracepoint_sign ." texthl=". g:delve_tracepoint_sign_highlight
+endif
 
 " addInstruction adds instruction with unique id
 function! delve#addInstruction(command, file, line, sign_name)
