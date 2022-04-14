@@ -268,6 +268,30 @@ function! delve#dlvTest(dir, ...)
     call delve#runCommand("test", flags, a:dir)
 endfunction
 
+" dlvTestCurrent is calling 'dlv test' for the currently test or function
+"
+" Optional arguments:
+" flags:        flags takes custom flags to pass to dlv.
+function! delve#dlvTestCurrent(dir, ...)
+    let flags = (a:0 > 0) ? join(a:000) : ""
+    let test_line = search("func Test", "bcnW")
+    let suffix = "$"
+
+    if test_line == 0
+        let test_line = search("func ", "bcnW")
+        let suffix = ""
+    endif
+
+    if test_line > 0
+        let line = getline(test_line)
+        let test_name_raw = split(line, " ")[1]
+        let test_name = split(test_name_raw, "(")[0]
+        call delve#dlvTest(a:dir, flags, "--", "--test.run", test_name . suffix)
+    else
+        call delve#dlvTest(a:dir, flags)
+    endif
+endfunction
+
 " dlvVersion is printing the version of dlv.
 function! delve#dlvVersion()
     !dlv version
@@ -434,6 +458,7 @@ command! -nargs=+ DlvExec call delve#dlvExec(<f-args>)
 command! -nargs=0 DlvRemoveBreakpoint call delve#removeBreakpoint(delve#getFile(), line('.'))
 command! -nargs=0 DlvRemoveTracepoint call delve#removeTracepoint(delve#getFile(), line('.'))
 command! -nargs=* DlvTest call delve#dlvTest(expand('%:p:h'), <f-args>)
+command! -nargs=* DlvTestCurrent call delve#dlvTestCurrent(expand('%:p:h'), <f-args>)
 command! -nargs=0 DlvToggleBreakpoint call delve#toggleBreakpoint(delve#getFile(), line('.'))
 command! -nargs=0 DlvToggleTracepoint call delve#toggleTracepoint(delve#getFile(), line('.'))
 command! -nargs=0 DlvVersion call delve#dlvVersion()
