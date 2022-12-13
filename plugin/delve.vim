@@ -53,6 +53,7 @@ end
 " - vnew         Opens a vertical window (default)
 " - new          Opens a horizontal window
 " - enew         Opens a new full screen window
+" - tabnew       Opens a new full screen window in a new tab
 if !exists("g:delve_new_command")
     let g:delve_new_command = "vnew"
 endif
@@ -383,6 +384,8 @@ function! delve#runCommand(command, ...)
             enew
         elseif g:delve_new_command == "new"
             new
+        elseif g:delve_new_command == "tabnew"
+            tabnew
         else
             echoerr "Unsupported g:delve_new_command, ". g:delve_new_command
             return
@@ -406,6 +409,8 @@ function! delve#runCommand(command, ...)
             VimShellBufferDir
         elseif g:delve_new_command == "new"
             VimShellBufferDir -popup
+        elseif g:delve_new_command == "tabnew"
+            VimShellTab
         else
             echoerr "Unsupported g:delve_new_command, ". g:delve_new_command
             return
